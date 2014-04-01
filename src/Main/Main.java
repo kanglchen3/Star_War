@@ -4,12 +4,12 @@
  * Student ID:
  * 
  */
-package example4;
-
+package main;
 
 import game.GameConsole;
-import java.awt.Color;
-import java.awt.Font;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.KeyEvent;
 
 /**
@@ -24,78 +24,109 @@ import java.awt.event.KeyEvent;
  *
  * @author Van Ting
  */
-public class Demo4 {
-
+public class Main {
+    AudioCollection aAudioCollection;
+    int difficulty = 0;
     public static void main(String[] args) {
-        Demo4 game = new Demo4();
+        Main game = new Main();
         game.startGame();
     }
 
     public void startGame() {
-        
-        // initialize console by chaining calls, and set it visible
-        GameConsole console = GameConsole.getInstance()
-                .setTitle("Space War")
-                .setFrameRate(50)
-                .setBoardWidth(1000)
-                .setBoardHeight(600)
-                .setBackground("/assets/bg.png")
-                .show();
-        
-        // start timer
-        Timer timer = new Timer();
-        timer.start();
-        
+        GameConsole console = GameConsole.getInstance();
+        console.setTitle("Space War");
+        console.setFrameRate(30);
+        // set custom background image
+        console.setBackground("/assets/bg.png");
+        // make the console visible
+        console.show();
         // board dimension can be obtained from console
         int width = console.getBoardWidth();
         int height = console.getBoardHeight();
-        
-        
-        Alien invader[][] = new Alien[12][4];
-       for(int k = 0;k<4;k++){
-               for(int i=0;i<12;i++){
-            invader[i][k] = new Alien(new String[] {"/assets/invader64_1.png","/assets/invader64_2.png"}, 100+50*i, 200-50*k, 5, 50);
-        }
-       }
-        Spaceship ship = new Spaceship(new String[] {"/assets/spaceship_1.png"}, 480, 500, 1);
-
-        // enter the main game loop
+        aAudioCollection = new AudioCollection();
         while (true) {
 
-            // get whatever inputs
-            int key = console.getPressedKey();
-            if (key == KeyEvent.VK_LEFT) {
-                ship.moveLeft();     // action for left key
-            } else if (key == KeyEvent.VK_RIGHT) {
-                ship.moveRight();    // action for right key
-            } else if (key == KeyEvent.VK_ENTER) {
-                // action for enter key
-            } else if (key == KeyEvent.VK_SPACE) {
-                // action for space key
+            Image statusImage = null;
+            GameLogic aGame = new GameLogic(difficulty);
+            for (int i = 100; i <= 900; i = i + 50) {
+                aGame.addSprite(new Alien(i, 100));
+                aGame.addSprite(new Alien(i, 150));
+                aGame.addSprite(new Alien(i, 200));
             }
+            aGame.addSprite(new Ship(500, 550));
 
-            // refresh at the specific rate
-            if (console.shouldUpdate()) {
-                console.clear();
+            //set time
+            Timer aTimer = new Timer();
+            aTimer.start();
+            aAudioCollection.invasion();
+            // enter the main game loop
+            boolean gameover = false;
+            while (!gameover) {
 
-                console.drawText(700, 20, "[TIME]", new Font("Helvetica", Font.BOLD, 12), Color.white);
-                console.drawText(750, 20, timer.getTimeString(), new Font("Helvetica", Font.PLAIN, 12), Color.white);
-
-                console.drawText(850, 20, "[SCORE]", new Font("Helvetica", Font.BOLD, 12), Color.white);
-                console.drawText(910, 20, "220", new Font("Helvetica", Font.PLAIN, 12), Color.white);
-               for(int k =0;k<4;k++){
-                for(int i=0;i<12;i++){
-                    invader[i][k].display(i,k);
+                // get whatever inputs
+                int key = console.getPressedKey();
+                if (key == KeyEvent.VK_LEFT) {
+                    aGame.getSpaceship().moveLeft();     // action for left key
+                } else if (key == KeyEvent.VK_RIGHT) {
+                    aGame.getSpaceship().moveRight();    // action for right key
+                } else if (key == KeyEvent.VK_ENTER) {
+                    //handle restart game
+                    statusImage = null;
+                    difficulty = 0;
+                    gameover = true;
+                } else if (key == KeyEvent.VK_SPACE) {
+                    //shot of ship
+                    aGame.shootByShip();
                 }
-               }
-                ship.display(0,0);
-                console.update();
-            }
+                aTimer.tick();//this is for tick the timer.
+                if (aTimer.shouldMove(20, 0)) {
+                    aGame.moveAliens();
+                    aGame.moveBullets();
+                    if (!aGame.checkShot()) {
+                        statusImage = new ImageIcon(this.getClass().getResource("/assets/gameover.png")).getImage();
+                    }
+                    if (aGame.checkWon()) {
+                        if (aTimer.setTimeout(1000)) {
+                            difficulty++;
+                            gameover = true;
+                        }
+                    }
+                }
+                if (aTimer.shouldMove(95, 15)) {
+                    aGame.shootByAliens();
+                }
 
-            // the idle time affects the no. of iterations per second which 
-            // should be larger than the frame rate
-            // for fps at 25, it should not exceed 40ms
-            console.idle(5);
+                // refresh at the specific rate, default 25 fps
+                if (console.shouldUpdate()) {
+                    console.clear();
+                    //display movables
+                    for (Sprite t : aGame.getSprites()) {
+                        t.display();
+                    }
+                    for (Bullet b : aGame.getBullets()) {
+                        b.display();
+                    }
+
+                    console.drawText(600, 20, "[LEVEL]", new Font("Helvetica", Font.BOLD, 12), Color.white);
+                    console.drawText(650, 20, String.valueOf(difficulty + 1), new Font("Helvetica", Font.PLAIN, 12), Color.white);
+
+                    console.drawText(700, 20, "[TIME]", new Font("Helvetica", Font.BOLD, 12), Color.white);
+                    console.drawText(750, 20, aTimer.getTimeString(), new Font("Helvetica", Font.PLAIN, 12), Color.white);
+
+                    console.drawText(850, 20, "[SCORE]", new Font("Helvetica", Font.BOLD, 12), Color.white);
+                    console.drawText(910, 20, String.valueOf(aGame.score), new Font("Helvetica", Font.PLAIN, 12), Color.white);
+
+                    console.drawImage(0, 0, statusImage);
+
+
+                    console.update();
+                }
+
+                // the idle time affects the no. of iterations per second which
+                // should be larger than the frame rate
+                // for fps at 25, it should not exceed 40ms
+                console.idle(2);
+            }
         }
 
     }

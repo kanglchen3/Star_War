@@ -1,45 +1,51 @@
-/*
- * Project Name: EE2311 Project - Space War
- * Student Name:
- * Student ID:
- * 
- */
-
-package example4;
+package main;
 
 /**
- *
- * @author vanting
+ * Created by Hung on 23/3/14.
  */
 public class Alien extends Sprite {
-        
-    private int speed = 50;      // pixel per second
-    private boolean forward = true;
-    
-    Alien(String[] file, int x, int y, int fps, int speed) {
-        super(file, x, y, fps);
-        this.speed = speed;
+    static String IMAGE_A = "/assets/invader64_1.png";
+    static String IMAGE_B = "/assets/invader64_2.png";
+    char image = 'A';
+    int SHAKE_INTERVAL = 10;
+    int count = 0;
+    Alien(int x, int y) {
+        super(IMAGE_A, x, y);
+    }
+
+    private void changeImage() {
+        if (++ count % SHAKE_INTERVAL == 0) {
+            if (image == 'A') {
+                this.setPic(IMAGE_B);
+                image = 'B';
+            } else {
+                this.setPic(IMAGE_A);
+                image = 'A';
+            }
+        }
     }
 
     @Override
-    public void next(int i,int k) {
-        super.next(i,k);       // update frame
-        
-        if(forward)
-            posX += speed/globalFps;
-        else
-            posX -= speed/globalFps;
-        
-        if(posX + 610 -50*i > console.getBoardWidth() || posX < 50*i)
-            forward = !forward;
+    public void moveLeft() {
+        super.moveLeft();
+        changeImage();
     }
 
-    public int getSpeed() {
-        return speed;
+    @Override
+    public void moveRight() {
+        super.moveRight();
+        changeImage();
     }
 
-    public void setSpeed(int speed) {
-        this.speed = speed;
+    @Override
+    public void moveLeft(int step) {
+        super.moveLeft(step);
+        changeImage();
     }
-    
+
+    @Override
+    public void moveRight(int step) {
+        super.moveRight(step);
+        changeImage();
+    }
 }

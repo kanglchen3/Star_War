@@ -22,7 +22,8 @@ public class Sprite extends Movable{
     public static final int w = 128;
     public static final int h = 128;
     // step size
-    static private int step = 2;
+
+    protected int step = 2;
             
 
     
@@ -32,28 +33,7 @@ public class Sprite extends Movable{
         this.posY = y;
     }
     
-    public void moveLeft() {
-        posX -= step;
-    }
-    
-    public void moveRight() {
-        posX += step;
-    }
 
-    public void moveLeft(int step) {
-        posX -= step;
-    }
 
-    public void moveRight(int step) {
-        posX += step;
-    }
-
-    public void moveDown() {
-        posY += 20;
-    }
-
-    static public int getStep() {
-        return step;
-    }
 
 }

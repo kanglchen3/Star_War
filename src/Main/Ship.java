@@ -12,13 +12,13 @@ public class Ship extends Sprite {
         super(IMAGE, x, y);
     }
 
-    @Override
     public void moveLeft() {
+        if (posX <= 0) return;
         posX -= step;
     }
 
-    @Override
     public void moveRight() {
+        if (posX >= 1000) return;
         posX += step;
     }
 }

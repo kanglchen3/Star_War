@@ -25,7 +25,6 @@ import java.awt.event.KeyEvent;
  * @author Van Ting
  */
 public class Main {
-    AudioCollection aAudioCollection;
     int difficulty = 0;
     public static void main(String[] args) {
         Main game = new Main();
@@ -43,22 +42,37 @@ public class Main {
         // board dimension can be obtained from console
         int width = console.getBoardWidth();
         int height = console.getBoardHeight();
-        aAudioCollection = new AudioCollection();
-        while (true) {
+        AudioCollection.welcome();
 
+        Image starwar = new ImageIcon(this.getClass().getResource("/assets/Star_Wars.jpg")).getImage();
+        console.drawImage(0, 0, starwar);
+        console.drawText(340, 500, "Press ENTER to start game, space to fire, arrows to move.", new Font("Helvetica", Font.BOLD, 14), Color.white);
+        console.update();
+        console.idle(10); // to buffer a little
+        while (true) {
+            int key = console.getPressedKey();
+            System.out.println(key);
+            if (key == KeyEvent.VK_ENTER)
+                break;
+        }
+        AudioCollection.stopWelcome();
+        AudioCollection.invasion();
+        while (true) {
+            AudioCollection.warning();
             Image statusImage = null;
             GameLogic aGame = new GameLogic(difficulty);
-            for (int i = 100; i <= 900; i = i + 50) {
-                aGame.addSprite(new Alien(i, 100));
-                aGame.addSprite(new Alien(i, 150));
-                aGame.addSprite(new Alien(i, 200));
-            }
-            aGame.addSprite(new Ship(500, 550));
+
 
             //set time
             Timer aTimer = new Timer();
             aTimer.start();
-            aAudioCollection.invasion();
+            Image level_bg = new ImageIcon(this.getClass().getResource("/assets/level_bg.jpg")).getImage();
+            while (!aTimer.setTimeout(2000)) {
+                console.clear();
+                console.drawImage(0, 0, level_bg);
+                console.drawText(100, 200, "LEVEL" + String.valueOf(difficulty + 1), new Font("TimesRoman", Font.TRUETYPE_FONT, 50), Color.white);
+                console.update();
+            }
             // enter the main game loop
             boolean gameover = false;
             while (!gameover) {
@@ -74,7 +88,7 @@ public class Main {
                     statusImage = null;
                     difficulty = 0;
                     gameover = true;
-                } else if (key == KeyEvent.VK_SPACE) {
+                } else if (true) { //key == KeyEvent.VK_SPACE
                     //shot of ship
                     aGame.shootByShip();
                 }
@@ -100,12 +114,7 @@ public class Main {
                 if (console.shouldUpdate()) {
                     console.clear();
                     //display movables
-                    for (Sprite t : aGame.getSprites()) {
-                        t.display();
-                    }
-                    for (Bullet b : aGame.getBullets()) {
-                        b.display();
-                    }
+                    aGame.displayAll();
 
                     console.drawText(600, 20, "[LEVEL]", new Font("Helvetica", Font.BOLD, 12), Color.white);
                     console.drawText(650, 20, String.valueOf(difficulty + 1), new Font("Helvetica", Font.PLAIN, 12), Color.white);

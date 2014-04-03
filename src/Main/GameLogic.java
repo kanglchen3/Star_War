@@ -14,6 +14,7 @@ public class GameLogic {
 
     private Collection<Sprite> sprites;
     private Collection<Bullet> bullets;
+    private Collection<Wall> walls;
 
     private Timer aTimer;
 
@@ -24,15 +25,31 @@ public class GameLogic {
     GameLogic(int difficulty){
         sprites = new ArrayList<Sprite>();
         bullets = new ArrayList<Bullet>();
+        walls = new ArrayList<Wall>();
         aAudioCollection = new AudioCollection();
         aTimer = new Timer();
         aTimer.reset();
         alienStep = difficulty * 1 + 2;
+        //generate things
+        for (int i = 100; i <= 900; i = i + 50) {
+            addSprite(new Alien(i, 100));
+            addSprite(new Alien(i, 150));
+            addSprite(new Alien(i, 200));
+        }
+        addSprite(new Ship(500, 550));
+        for (int j = 25; j < 1000; j += 50) {
+            addWall(new Wall(j, 500));
+        }
     }
 
     public void addSprite(Sprite... s) {
         for (Sprite _s : s)
             sprites.add(_s);
+    }
+
+    public void addWall(Wall... w) {
+        for (Wall _w : w)
+            walls.add(_w);
     }
 
     public void removeSprite(Sprite... s) {
@@ -48,12 +65,6 @@ public class GameLogic {
         }
         return new Ship(0, 0);
     }
-
-    public Collection<Sprite> getSprites() {
-        return sprites;
-    }
-
-    public Collection<Bullet> getBullets() {return bullets;}
 
     public void moveAliens() {
         boolean movingDown = false;
@@ -122,7 +133,7 @@ public class GameLogic {
     }
 
     public void shootByShip() {
-        if (aTimer.shouldShot(200)) {
+        if (aTimer.shouldShot(160)) {
             aTimer.reset();
         } else {
             return;
@@ -167,6 +178,7 @@ public class GameLogic {
         //return false if ship died
         Collection<Sprite> rubish_s = new ArrayList<Sprite>();
         Collection<Bullet> rubish_b = new ArrayList<Bullet>();
+        Collection<Wall> rubbish_w = new ArrayList<Wall>();
         try {
             for (Sprite s : sprites) {
                 if (s instanceof Ship) continue;
@@ -174,9 +186,22 @@ public class GameLogic {
                     if (b.movingDown) continue;
                     int distance_x = Math.abs(s.getPosX() - b.getPosX());
                     int distance_y = Math.abs(s.getPosY() - b.getPosY());
-                    if (distance_x < s.getPicWidth() / 2 - 6 && distance_y < s.getPicHeight() / 2 - 6) {
+                    if (distance_x <= s.getPicWidth() / 2 - 6 && distance_y <= s.getPicHeight() / 2 - 6) {
                         rubish_b.add(b);
                         rubish_s.add(s);
+                    }
+                    if (s.getPosY() > 450) { // hit wall
+                        for (Wall w : walls) {
+                            distance_x = Math.abs(s.getPosX() - w.getPosX());
+                            distance_y = Math.abs(s.getPosY() - w.getPosY());
+                            if (distance_x <= s.getPicWidth() / 2 + w.getPicWidth() / 2 - 6
+                                    && distance_y <= s.getPicHeight() / 2 + w.getPicHeight() / 2) {
+                                rubbish_w.add(w);
+                            }
+                        }
+                    }
+                    if (s.getPosY() > 600) {
+                        return false;
                     }
                 }
             }
@@ -186,9 +211,22 @@ public class GameLogic {
                     if (!b.movingDown) continue;
                     int distance_x = Math.abs(s.getPosX() - b.getPosX());
                     int distance_y = Math.abs(s.getPosY() - b.getPosY());
-                    if (distance_x < s.getPicWidth() / 2 - 6 && distance_y < s.getPicHeight() / 2 - 6) {
+                    if (distance_x <= s.getPicWidth() / 2 - 6 && distance_y <= s.getPicHeight() / 2 - 6) {
                         rubish_b.add(b);
                         rubish_s.add(s);
+                        AudioCollection.bigbang();
+                    }
+                }
+            }
+            for (Wall w : walls) {
+                for (Bullet b : bullets) {
+                    if (!b.movingDown) continue;
+                    int distance_x = Math.abs(b.getPosX() - w.getPosX());
+                    int distance_y = Math.abs(b.getPosY() - w.getPosY());
+                    if (distance_x <= w.getPicWidth() / 2 && distance_y <= w.getPicHeight() / 2) {
+                        if (w.broke() == 0)
+                            rubbish_w.add(w);
+                        rubish_b.add(b);
                     }
                 }
             }
@@ -196,8 +234,12 @@ public class GameLogic {
 
         }
         try {
-            sprites.removeAll(rubish_s);
+            if (rubish_s.size() > 0) {
+                sprites.removeAll(rubish_s);
+                AudioCollection.blowup();
+            }
             bullets.removeAll(rubish_b);
+            walls.removeAll(rubbish_w);
         }catch (Exception e) {
 
         }
@@ -209,5 +251,17 @@ public class GameLogic {
             }
         }
         return true;
+    }
+
+    public void displayAll() {
+        for (Sprite s : sprites) {
+            s.display();
+        }
+        for (Bullet b : bullets) {
+            b.display();
+        }
+        for (Wall w : walls) {
+            w.display();
+        }
     }
 }

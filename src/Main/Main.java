@@ -78,7 +78,7 @@ public class Main {
                     difficulty = 0;
                     previousScore = 0;
                     gameover = true;
-                } else if (true) { //key == KeyEvent.VK_SPACE
+                } else if (key == KeyEvent.VK_SPACE) { //
                     //shot of ship
                     aGame.shootByShip();
                 }

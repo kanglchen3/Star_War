@@ -7,11 +7,7 @@
 
 package main;
 
-import game.GameConsole;
-import java.awt.Image;
-import javax.swing.ImageIcon;
-
-public class Sprite extends Movable{
+public class Sprite extends Mover {
 
     // the size of the sprite
     public static final int w = 128;

@@ -6,11 +6,11 @@ import javax.swing.*;
 import java.awt.*;
 
 
-public class Movable extends Thing{
+public class Mover extends Thing{
 
     static protected int step;
 
-    public Movable(String file) {
+    public Mover(String file) {
         super(file);
     }
 

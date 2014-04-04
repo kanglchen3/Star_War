@@ -1,8 +1,6 @@
 package main;
 
-import javax.swing.*;
-
-public class Bullet extends Movable{
+public class Bullet extends Mover {
     public boolean movingDown;
     private int speed;
     Bullet(int x, int y, boolean movingDown, int speed) {

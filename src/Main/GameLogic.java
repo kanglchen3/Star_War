@@ -7,7 +7,7 @@ import java.util.Collection;
  * Created by Hung on 23/3/14.
  */
 public class GameLogic {
-    public int score = 0;
+    public int score;
     static private int BOUND_LEFT = 50;
     static private int BOUND_RIGHT = 950;
     private int direction = 1; // -1 :  left, 1 : right, 0 : horizontal no movement
@@ -22,7 +22,7 @@ public class GameLogic {
 
     AudioCollection aAudioCollection;
 
-    GameLogic(int difficulty){
+    GameLogic(int difficulty, int previousScore){
         sprites = new ArrayList<Sprite>();
         bullets = new ArrayList<Bullet>();
         walls = new ArrayList<Wall>();
@@ -40,6 +40,7 @@ public class GameLogic {
         for (int j = 25; j < 1000; j += 50) {
             addWall(new Wall(j, 500));
         }
+        score = previousScore;//restore the score
     }
 
     public void addSprite(Sprite... s) {

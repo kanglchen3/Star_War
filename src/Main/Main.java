@@ -57,10 +57,11 @@ public class Main {
         }
         AudioCollection.stopWelcome();
         AudioCollection.invasion();
+        int previousScore = 0;
         while (true) {
             AudioCollection.warning();
             Image statusImage = null;
-            GameLogic aGame = new GameLogic(difficulty);
+            GameLogic aGame = new GameLogic(difficulty, previousScore);
 
 
             //set time
@@ -87,6 +88,7 @@ public class Main {
                     //handle restart game
                     statusImage = null;
                     difficulty = 0;
+                    previousScore = 0;
                     gameover = true;
                 } else if (true) { //key == KeyEvent.VK_SPACE
                     //shot of ship
@@ -102,6 +104,7 @@ public class Main {
                     if (aGame.checkWon()) {
                         if (aTimer.setTimeout(1000)) {
                             difficulty++;
+                            previousScore = aGame.score;
                             gameover = true;
                         }
                     }

@@ -11,11 +11,6 @@ import game.GameConsole;
 import java.awt.Image;
 import javax.swing.ImageIcon;
 
-/**
- * Sample design of a sprite
- * 
- * @author Van Ting
- */
 public class Sprite extends Movable{
 
     // the size of the sprite

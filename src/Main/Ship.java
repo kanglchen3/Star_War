@@ -1,8 +1,6 @@
 package main;
 
-/**
- * Created by Hung on 23/3/14.
- */
+
 public class Ship extends Sprite {
     static String IMAGE = "/assets/spaceship_1.png";
 

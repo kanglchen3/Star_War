@@ -7,9 +7,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-/**
- * Created by Hung on 23/3/14.
- */
 public class AudioCollection {
     static private String WELCOME = "/assets/welcome.wav";
     static private String GAMEOVER = "/assets/gameover.wav";

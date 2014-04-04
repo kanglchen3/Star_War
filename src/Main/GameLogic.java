@@ -3,9 +3,6 @@ package main;
 import java.util.ArrayList;
 import java.util.Collection;
 
-/**
- * Created by Hung on 23/3/14.
- */
 public class GameLogic {
     public int score;
     static private int BOUND_LEFT = 50;

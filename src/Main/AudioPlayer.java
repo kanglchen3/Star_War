@@ -5,9 +5,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-/**
- * Created by Hung on 3/4/14.
- */
 class AudioPlayer  extends Thread{
     private String[] filenames;
     private boolean loop;

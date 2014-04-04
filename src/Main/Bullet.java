@@ -2,9 +2,6 @@ package main;
 
 import javax.swing.*;
 
-/**
- * Created by Hung on 23/3/14.
- */
 public class Bullet extends Movable{
     public boolean movingDown;
     private int speed;

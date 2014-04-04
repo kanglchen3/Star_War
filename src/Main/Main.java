@@ -12,18 +12,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 
-/**
- * Demo for the use of:
- *
- * 1. create and display game console 
- * 2. start a game loop 
- * 3. create and display aliens 
- * 4. detect key pressed 
- * 5. update screen at predefined interval 
- * 6. draw text to show score/time information
- *
- * @author Van Ting
- */
 public class Main {
     int difficulty = 0;
     public static void main(String[] args) {
@@ -118,25 +106,15 @@ public class Main {
                     console.clear();
                     //display movables
                     aGame.displayAll();
-
                     console.drawText(600, 20, "[LEVEL]", new Font("Helvetica", Font.BOLD, 12), Color.white);
                     console.drawText(650, 20, String.valueOf(difficulty + 1), new Font("Helvetica", Font.PLAIN, 12), Color.white);
-
                     console.drawText(700, 20, "[TIME]", new Font("Helvetica", Font.BOLD, 12), Color.white);
                     console.drawText(750, 20, aTimer.getTimeString(), new Font("Helvetica", Font.PLAIN, 12), Color.white);
-
                     console.drawText(850, 20, "[SCORE]", new Font("Helvetica", Font.BOLD, 12), Color.white);
                     console.drawText(910, 20, String.valueOf(aGame.score), new Font("Helvetica", Font.PLAIN, 12), Color.white);
-
                     console.drawImage(0, 0, statusImage);
-
-
                     console.update();
                 }
-
-                // the idle time affects the no. of iterations per second which
-                // should be larger than the frame rate
-                // for fps at 25, it should not exceed 40ms
                 console.idle(2);
             }
         }

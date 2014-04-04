@@ -1,8 +1,5 @@
 package main;
 
-/**
- * Created by Hung on 4/4/14.
- */
 public class Wall extends Thing {
     int lives;
     public Wall(int x, int y) {

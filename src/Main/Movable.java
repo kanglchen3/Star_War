@@ -5,9 +5,7 @@ import game.GameConsole;
 import javax.swing.*;
 import java.awt.*;
 
-/**
- * Created by Hung on 23/3/14.
- */
+
 public class Movable extends Thing{
 
     static protected int step;

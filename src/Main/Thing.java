@@ -5,9 +5,6 @@ import game.GameConsole;
 import javax.swing.*;
 import java.awt.*;
 
-/**
- * Created by Hung on 4/4/14.
- */
 public class Thing {
     // the upper-left corner of the console, reference origin point
     public static final int orgX = 0;

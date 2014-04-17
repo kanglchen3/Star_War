@@ -146,7 +146,7 @@ public class GameLogic {
         }
 
     }
-
+    //randomly change to shoot by aliens
     public void shootByAliens() {
         for (Sprite s : sprites) {
             if (s instanceof Alien) {
@@ -216,6 +216,7 @@ public class GameLogic {
                     }
                 }
             }
+            // bullets destroy wall
             for (Wall w : walls) {
                 for (Bullet b : bullets) {
                     if (!b.movingDown) continue;
@@ -228,6 +229,20 @@ public class GameLogic {
                     }
                 }
             }
+            //enable the counterstrike of bullets
+            for (Bullet b : bullets) {
+                if (!b.movingDown) continue;
+                for (Bullet _b : bullets) {
+                    if (_b.movingDown) continue;
+                    int distance_x = Math.abs(b.getPosX() - _b.getPosX());
+                    int distance_y = Math.abs(b.getPosY() - _b.getPosY());
+                    if (distance_x <= 10 && distance_y <= 10) {
+                        rubish_b.add(b);
+                        rubish_b.add(_b);
+                        AudioCollection.ding();
+                    }
+                }
+            } 
         } catch (Exception ex) {
 
         }
